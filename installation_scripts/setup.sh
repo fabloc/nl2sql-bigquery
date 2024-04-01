@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Performs an automated installation of the Customer Data Platform
+# Performs an automated installation of the Natural Language to SQL application
 # Modify the Globals variables prior to running this script
 #################################
 
@@ -15,7 +15,6 @@ DATABASE_NAME="nl2sql-rag-db"
 DATABASE_USER="nl2sql-admin"
 DATABASE_PASSWORD=">rJFj8HbN<:ObiEm"
 BIGQUERY_DATASET="cdp_demo"
-EVENTS_START_DATE="2020-01-01"
 #################################
 
 
@@ -109,7 +108,7 @@ check_gcp_constraints
 
 
 # Enabling the services
-gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com aiplatform.googleapis.com compute.googleapis.com bigquery.googleapis.com
+gcloud services enable artifactregistry.googleapis.com cloudbuild.googleapis.com run.googleapis.com aiplatform.googleapis.com compute.googleapis.com
 gcloud services enable servicenetworking.googleapis.com cloudresourcemanager.googleapis.com sqladmin.googleapis.com
 
 cp -f variables.auto.tfvars.tmpl terraform/variables.auto.tfvars
@@ -133,10 +132,6 @@ sed -i "s|dataset_id =|dataset_id = ${BIGQUERY_DATASET}|" ../config/config.ini
 sed -i "s|database_name =|database_name = ${DATABASE_NAME}|" ../config/config.ini
 sed -i "s|database_user =|database_user = ${DATABASE_USER}|" ../config/config.ini
 sed -i "s|database_password =|database_password = ${DATABASE_PASSWORD}|" ../config/config.ini
-sed -i "s|dataset_id =|dataset_id = ${BIGQUERY_DATASET}|" bigquery_dataset/config.ini
-sed -i "s|region =|region = ${REGION}|" bigquery_dataset/config.ini
-sed -i "s|project_id =|project_id = ${PROJECT_ID}|" bigquery_dataset/config.ini
-sed -i "s|events_start_date =|events_start_date = ${EVENTS_START_DATE}|" bigquery_dataset/config.ini
 
 # Starting Configuration
 echo "***** Create a new Artifact Repository for our webapp *****"
@@ -181,11 +176,8 @@ source .venv/bin/activate   # activate Virtualenv
 # installing required python packages
 pip install -r requirements.txt
 
-# echo "***** Initializing Bigquerywith new Dataset and all required Tables *****"
-cd ..
-python3 installation_scripts/bigquery_dataset/init_bigquery.py
-
 echo "***** Initializing PgVector Database with tables definitions and samples *****"
+cd ..
 sed -i "s|sql_ip_type = PRIVATE|sql_ip_type = PUBLIC|" config/config.ini
 python3 app/init_pgvector.py
 

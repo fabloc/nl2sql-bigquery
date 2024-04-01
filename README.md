@@ -1,4 +1,4 @@
-# Demonstration of using Google Cloud to build a Customer Data Platform for user segmentation with low latency and predictive costs
+# Application to translateNatural Language to Bigquery SQL Query
 
 ## Google Disclaimer
 
@@ -6,13 +6,12 @@ This is not an officially supported Google Product
 
 ## Introduction
 
-BigQuery is the platform of choice for many companies to store and analyze their data. Especially in the field of Customer Data Platform (CDP), this is a very powerful tool to batch process huge amount of data. However, one pain point with BigQuery when it comes to user facing requests: given that the model is primarily on-demand, costs can grow very fast and are not predictable. An alternative is to use capping of slots used in the BigQuery Enterprise Edition, but then performances can be severely impacted.
-This demo aims at demonstrating that there are ways to mitigate both the costs predictability while still providing low latency.
+BigQuery is the platform of choice for many companies to store and analyze their data. Some use-cases require end-user without technical knowledge to be able to perform queries on the data warehouse. An example is a marketing persona which uses the platform to explore the data and create customer segmentations. This persona will be more easily convinced to use a platform based on BigQuery if the interface does not require SQL knowledge, or proprietary custom language on top of BigQuery.
+This project aims at providing an abstraction layer on top of BigQuery, offering a natural language interface to end users to build queries.
+Several nl2sql approaches exists, but there is no guarantee that the generated query actually matches the user's request. This can be problematic for complex tables, and a major blocker for the adoption of such a solution. User's confidence in the result matching their initial request is paramount.
+this repository aims at provided a reliable mechanism, with a validation feedback, ensuring that the generated SQL Query is as close as possible from the user's request.
+For a complete solution demonstrating the performance of the E2E solution on complex and large data tables, please refer to the repository [`genai-powered-cdp`](https://github.com/fabloc/genai-powered-cdp) which simulates a Customer Data Platform by deploying events/users/products tables, with associated aggregated tables.
 
-On top of that, this demonstration aims at showing that Generative AI is also a viable way to address another (more general) pain point with CDP: user exploration when defining marketing segments of users.
-Most of the times, CDPs offer multiple ways to explore and define the user segments. It ranges from the pre-arranged filters to a custom query language. The issue comes from the fact that the end users of a CDP are marketing personas, who have little to no technical knowledge, and exploring the datasets can become tedious for them, and source of ongoing support from the CDP vendor.
-This project provides a way to query multiple BigQuery datasets and get an answers under 10s, with the ability to understand the intent of the user and select the appropriate tables to query. It then translates the user question into a BigQuery SQL query and executes it.
-There are several different ways to do nl2sql, but in the case of a CDP, where the end user will not have access to BigQuery, it is paramount that the generated SQL query is syntactically correct and actually answers the user's question. These 2 aspects are what is lacking in the common nl2sql libraries, and what this project also addresses.
 
 ## Architecture
 

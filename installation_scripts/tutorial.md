@@ -1,11 +1,11 @@
-# Setting up Generative AI for Customer Data Platform Solution
+# Setting up Natural Language to SQL Query Translation
 
 ## Welcome!
 Follow this instructions to deploy the Generative AI Customer Data Platform Solution within your Project.
 
-To see more details about the solution, components and architecture, please go to the main [README](https://github.com/fabloc/genai-powered-cdp/blob/main/README.md) file.
+To see more details about the solution, components and architecture, please go to the main [README](https://github.com/fabloc/nl2sql-bigquery/blob/main/README.md) file.
 
-**Time to complete**: About **TBD** minutes
+**Time to complete**: About 15 minutes
 
 Click the **Start** button to move to the next step.
 
@@ -16,7 +16,6 @@ Before start please make sure you have the following prerequisites:
   - Project IAM Admin
   - Service Usage Admin
   - Service Account Admin
-  - BigQuery Admin
   - Cloud SQL Admin
   - Artifact Registry Admin
   - Cloud Build Admin
@@ -40,7 +39,7 @@ Continue on to the next step to start the deployment process.
 
 ### (Optional) Advanced configuration
 You can overwrite default parameters as regions or some specific values by editing the <walkthrough-editor-open-file
-    filePath="cloudshell_open/genai-powered-cdp/installation_scripts/setup.sh">
+    filePath="cloudshell_open/nl2sql-bigquery/installation_scripts/setup.sh">
     setup.sh
 </walkthrough-editor-open-file> script.
 
@@ -67,4 +66,4 @@ The script performs the following steps:
 14. Show the Cloud Run URL of the App
 
 
-For a more detailed information please refer to the main [README](https://github.com/fabloc/genai-powered-cdp/blob/main/README.md) file.
+For a more detailed information please refer to the main [README](https://github.com/fabloc/nl2sql-bigquery/blob/main/README.md) file.
