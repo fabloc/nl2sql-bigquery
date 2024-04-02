@@ -6,15 +6,16 @@
 
 # Global variables
 #################################
-PROJECT_ID="genai-cdp-test-3"                   # ID of the project where you want to deploy
-REGION="europe-west1"                           # Name of the region
-AUTH_USER="admin@fabienlocquet.altostrat.com"   # User that will run the application
-ARTIFACT_REGISTRY_REPO="genai-cdp-repo"         # Name of the Artifact Registry Repository
-SERVICE_NAME="genai-cdp"                        # Name of the Cloud Run Service
+PROJECT_ID="nl2sql-demo-project"                      # ID of the project where you want to deploy
+REGION="europe-west1"                                 # Name of the region
+AUTH_USER="nl2sql_user"                               # User that will run the application
+ARTIFACT_REGISTRY_REPO="nl2sql-repo"                  # Name of the Artifact Registry Repository
+SERVICE_NAME="nl2sql-service"                         # Name of the Cloud Run Service
 DATABASE_NAME="nl2sql-rag-db"
 DATABASE_USER="nl2sql-admin"
 DATABASE_PASSWORD=">rJFj8HbN<:ObiEm"
 BIGQUERY_DATASET="cdp_demo"
+# BIGQUERY_TABLES=["products_table", "users_table"]   # Optional parameter listing the tables to use inside the Bigquery dataset
 #################################
 
 
@@ -129,6 +130,7 @@ sed -i "s|region =|region = ${REGION}|" ../config/config.ini
 sed -i "s|auth_user =|auth_user = ${AUTH_USER}|" ../config/config.ini
 sed -i "s|project_id_data =|project_id_data = ${PROJECT_ID}|" ../config/config.ini
 sed -i "s|dataset_id =|dataset_id = ${BIGQUERY_DATASET}|" ../config/config.ini
+sed -i "s|tables = []|tables = ${BIGQUERY_TABLES}|" ../config/config.ini
 sed -i "s|database_name =|database_name = ${DATABASE_NAME}|" ../config/config.ini
 sed -i "s|database_user =|database_user = ${DATABASE_USER}|" ../config/config.ini
 sed -i "s|database_password =|database_password = ${DATABASE_PASSWORD}|" ../config/config.ini

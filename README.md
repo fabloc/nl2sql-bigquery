@@ -85,6 +85,74 @@ When processing a user request, the following steps are executed:
 6. The question and associated generated query are added to the Vector database for future matching.
 
 
+# Configuration
+
+## Required Properties
+
+The following properties are required to deploy and run the application.
+They can be set in the setup file located at [`/installation_scripts/setup.sh`](/installation_scripts/setup.sh).
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="PROJECT_ID"></a> [project\_id](#input\_project_id) | Project id where to deploy the application infrastrcture | `string` | `nl2sql-demo-project` | yes |
+| <a name="REGION"></a> [region](#input\_region) | Region where to deploy the application infrastructure | `string` | `europe-west1` | yes |
+| <a name="AUTH_USER"></a> [auth\_user](#input\_auth\_user) | User identity | `string` | `nl2sql_user` | yes |
+| <a name="ARTIFACT_REGISTRY_REPO"></a> [artifact\_registry\_repo](#input\_artifact\_registry\_repo) | Name of the Artifact Registry Repository used to store the Docker image generated during the setup phase and used to deploy Cloud Run instances | `string` | `nl2sql-repo` | yes |
+| <a name="SERVICE_NAME"></a> [service\_name](#input\_service\_name) | Name of the Cloud Run service to deploy | `string` | `nl2sql-service` | yes |
+| <a name="DATABASE_NAME"></a> [database\_name](#input\_database\_name) | Name of the database to deply | `string` | `nl2sql-rag-db` | yes |
+| <a name="DATABASE_USER"></a> [database\_user](#input\_database\_user) | User name for the Vector Database | `string` | `nl2sql-admin` | yes |
+| <a name="DATABASE_PASSWORD"></a> [database\_password](#input\_database\_password) | Password associated with the Database User above | `string` | `>rJFj8HbN<:ObiEm` | yes |
+| <a name="BIGQUERY_DATASET"></a> [bigquery\_dataset](#input\_bigquery\_dataset) | Name of the BigQuery dataset to use | `string` | `europe-west1-b` | yes |
+
+## Optional Properties
+
+The following properties are optional.
+
+### Tables Selection
+
+If the specified dataset contains many tables and only a subset must be used for the SQL Query generation, set the `BIGUERY_TABLES` property in the file `setup.sh`. It should have the format `["table1", "table2", etc.]`
+
+### Sample Questions/SQL Queries
+
+In the folder `config/query_samples`, files can be added to bootstrap the Vector Database with pairs of Question/SQL Queries curated by the data architects. This is useful for complex tables where description is not always sufficient to enable LLM models to generate appropriate queries.
+
+The structure is the following:
+
+Name of the file: The name should match exactly the name of the table for which the samples apply with suffix '.yaml'. For example, for table `users_table`, the query sample file should be named `users_table.yaml` inside the folder config/queries_samples
+
+Content of the file: The body of the file should be YAML formatted. Each sample should have the following structure:
+
+```
+- Question: What are the top 5 products purchased in the last 3 months?
+  SQL Query: |-
+    SELECT
+      product_name,
+      SUM(daily_product_purchased_items) AS total_purchased_items
+    FROM
+      `{{ project_id }}.{{ dataset_id }}.product_aggregates`
+    WHERE
+      DATE(session_day) >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 MONTH)
+    GROUP BY
+      product_name
+    ORDER BY
+      total_purchased_items DESC
+    LIMIT 5
+```
+
+The sample accepts 2 placeholders that will be automatically replaced by the appropriate values during the application deployment:
+{{ project_id }} and {{ dataset_id }}.
+
+
+# Tables Descriptions
+
+Tables description are important in the overall relevancy of the generated SQL Queries. Every columns should have a `description` field. This description is added in the schema generated for each table and used as part of the LLM prompt.
+
+# Future Improvements
+
+ - `AUTH_USER` variable is hardcoded and used to identify the user making the request. User log in should be implemented, and actual user identity should be used to track the user's activity.
+ - Display the query that the feedback loop inferred from the generated query so that the end-user can validate that it actually matches his intent. Allow the user to vote up or down (if vote up, the generated query is added to the Vector Database)
+
+
 # Getting help
 
 If you have any questions or if you found any problems with this repository, please report through GitHub issues.
