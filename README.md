@@ -1,4 +1,4 @@
-# Application to translateNatural Language to Bigquery SQL Query
+# Application to translate Natural Language to Bigquery SQL Query
 
 ## Google Disclaimer
 
@@ -67,6 +67,22 @@ Application Stack
 # Environment Setup
 
 Please follow the instructions detailed in the page [`/installation_scripts`](/installation_scripts) to set up the environment.
+
+
+# Technical Deep-Dive
+
+The application needs to be initialized with tables schemas. This is done automatically by providing the project_id, dataset_id, and optionally the table list inside the dataset (if none is provided, all tables in the dataset are considered for matching). The schemas are then converted to embeddings using the 'gecko-embedding' model (can be changed in the configuration file) and stored in the Vector Database in the 'table-embeddings' table.
+
+Optionnally, samples questions/queries can be provided in yaml format. The process is the same: the question are converted to embeddings, and stored in the Vector Database alongside the valid SQL Query in the 'sql-embeddings' table.
+
+When processing a user request, the following steps are executed:
+
+1. application first tries to match the question exactly with a question stored in the Vector database. If there is a match, then the associated valid SQL Query is retrieved from the Vector DB and used as the final SQL Query.
+2. If no match is found, then the application will try to find similar questions in Vector Database. If matches are found, they are injected in the LLM prompt, along with the associated SQL Query (few-shot prompt).
+3. If similar questions have been found, Gemini Pro is used to execute the prompt. Gemini Pro is very good at identifying patterns in samples data, and excels at few-shot. It is also very quick to generate a result. On the other hand, if no similar question was dound then 'unicorn' model is used to execute the prompt. It is larger than Gemini, slower, but much more efficient at following complex rules in the prompt in 0-shot.
+4. Once a SQL Query is generated, the validation feedback loop kicks in: 2 processes are executed in parallel: A dry-run of the SQL Query using BigQuery to validate the SQL Syntax, and a prompt using 'unicorn' model to validate that the generated SQL Query matches the initial user's intent. If an error is found in either the BigQuery dry-run or the LLM semantics validation, go back to step 3, and generate a new prompt, also injecting the errors identified, and previous errors as well.
+5. If the validations were successful, the final SQL Query is executed against BigQuery and the results are displayed to the user. This behaviour can be changed in the configuration file.
+6. The question and associated generated query are added to the Vector database for future matching.
 
 
 # Getting help
