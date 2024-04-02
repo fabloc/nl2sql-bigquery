@@ -102,7 +102,7 @@ They can be set in the setup file located at [`/installation_scripts/setup.sh`](
 | <a name="DATABASE_NAME"></a> [database\_name](#input\_database\_name) | Name of the database to deply | `string` | `nl2sql-rag-db` | yes |
 | <a name="DATABASE_USER"></a> [database\_user](#input\_database\_user) | User name for the Vector Database | `string` | `nl2sql-admin` | yes |
 | <a name="DATABASE_PASSWORD"></a> [database\_password](#input\_database\_password) | Password associated with the Database User above | `string` | `>rJFj8HbN<:ObiEm` | yes |
-| <a name="BIGQUERY_DATASET"></a> [bigquery\_dataset](#input\_bigquery\_dataset) | Name of the BigQuery dataset to use | `string` | `europe-west1-b` | yes |
+| <a name="BIGQUERY_DATASET"></a> [bigquery\_dataset](#input\_bigquery\_dataset) | Name of the BigQuery dataset to use | `string` | `cdp_demo` | yes |
 
 ## Optional Properties
 
