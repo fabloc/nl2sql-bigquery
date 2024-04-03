@@ -15,7 +15,7 @@ DATABASE_NAME="nl2sql-rag-db"
 DATABASE_USER="nl2sql-admin"
 DATABASE_PASSWORD=">rJFj8HbN<:ObiEm"
 BIGQUERY_DATASET="cdp_demo"
-# BIGQUERY_TABLES=["products_table", "users_table"]   # Optional parameter listing the tables to use inside the Bigquery dataset
+# BIGQUERY_TABLES="products_table, users_table"   # Optional parameter listing the tables to use inside the Bigquery dataset, in the form "table1, table2, etc."
 #################################
 
 
@@ -130,10 +130,13 @@ sed -i "s|region =|region = ${REGION}|" ../config/config.ini
 sed -i "s|auth_user =|auth_user = ${AUTH_USER}|" ../config/config.ini
 sed -i "s|project_id_data =|project_id_data = ${PROJECT_ID}|" ../config/config.ini
 sed -i "s|dataset_id =|dataset_id = ${BIGQUERY_DATASET}|" ../config/config.ini
-sed -i "s|tables = []|tables = ${BIGQUERY_TABLES}|" ../config/config.ini
+sed -i "s|tables = []|tables = [${BIGQUERY_TABLES}]|" ../config/config.ini
 sed -i "s|database_name =|database_name = ${DATABASE_NAME}|" ../config/config.ini
 sed -i "s|database_user =|database_user = ${DATABASE_USER}|" ../config/config.ini
 sed -i "s|database_password =|database_password = ${DATABASE_PASSWORD}|" ../config/config.ini
+sed -i "s|project_id =|project_id = ${PROJECT_ID}|" bigquery_dataset/config.ini
+sed -i "s|region =|region = ${REGION}|" bigquery_dataset/config.ini
+sed -i "s|dataset_id =|dataset_id = ${BIGQUERY_DATASET}|" bigquery_dataset/config.ini
 
 # Starting Configuration
 echo "***** Create a new Artifact Repository for our webapp *****"

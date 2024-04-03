@@ -78,6 +78,11 @@ project_id, owner, table_name
 '''
 
 
+get_tables_sql='''
+select table_id
+FROM {cfg.user_dataset}.__TABLES__
+'''
+
 def schema_generator(sql):
     formatted_sql = sql.format(**globals(), **locals())
     logger.info("BigQuery request: " + formatted_sql)
@@ -104,11 +109,14 @@ def add_table_comments(columns_df, pkeys_df, fkeys_df, table_comments_df):
     return table_comments_df
 
 
-def get_tables(df):
+def get_tables(all_tables_df, tables_with_comments_df):
     tables = []
-    for _, row in df.iterrows():
-        tables.append(row['table_name'])
-    df.reset_index()
+    for _, row in all_tables_df.iterrows():
+        if len(tables_with_comments_df.loc[tables_with_comments_df['table_name'] == row['table_id']]) != 0:
+          tables.append(row['table_id'])
+        else:
+          logger.error('The table "' + row['table_id'] + '" does not have a description, discarding the table.')
+    all_tables_df.reset_index()
     return tables
 
 def insert_sample_queries_lookup(tables_list):
@@ -146,10 +154,12 @@ def insert_sample_queries_lookup(tables_list):
 
 def init_table_and_columns_desc():
   
+    all_tables = schema_generator(get_tables_sql)
+    
     table_comments_df= schema_generator(get_table_comments_sql)
 
     # List all tables to be considered
-    tables_list = get_tables(table_comments_df)
+    tables_list = get_tables(all_tables, table_comments_df)
 
     # Test whether all tables descriptions are present in pgvector DB
     # If not, generate them

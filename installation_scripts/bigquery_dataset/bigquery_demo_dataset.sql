@@ -80,7 +80,7 @@ AS r"""
   return session;
 """;
 
-INSERT INTO {{ dataset_id }}.events
+INSERT INTO {{ dataset_id }}.events(user_id, country, session_id, traffic_source, session_created_at, total_cost, session)
 
   WITH
 
@@ -154,5 +154,3 @@ INSERT INTO {{ dataset_id }}.events
   LEFT JOIN `{{ dataset_id }}.products` AS products
   ON session_events.product_id = products.id
   GROUP BY user_id, country, session_id, session_created_at, traffic_source
-
-);
