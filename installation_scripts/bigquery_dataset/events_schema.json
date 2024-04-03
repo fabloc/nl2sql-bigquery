@@ -1,0 +1,90 @@
+[
+  {
+    "name": "user_id",
+    "type": "STRING",
+    "description": "User unique identifier"
+  },
+  {
+    "name": "country",
+    "type": "STRING",
+    "description": "User country"
+  },
+  {
+    "name": "session_id",
+    "type": "STRING",
+    "description": "Session unique identifier"
+  },
+  {
+    "name": "traffic_source",
+    "type": "STRING",
+    "description": "Traffic source"
+  },
+  {
+    "name": "session_created_at",
+    "type": "TIMESTAMP",
+    "description": "Session creation timestamp"
+  },
+  {
+    "name": "total_cost",
+    "type": "FLOAT",
+    "description": "Total costs of products purchased during the session"
+  },
+  {
+    "fields": [
+      {
+        "name": "event_type",
+        "type": "STRING",
+        "description": "Event type"
+      },
+      {
+        "name": "product_id",
+        "type": "INTEGER",
+        "description": "Product unique identifier"
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "description": "Event creation timestamp"
+      },
+      {
+        "name": "sequence_number",
+        "type": "INTEGER",
+        "description": "Event sequence number in the session"
+      },
+      {
+        "name": "uri",
+        "type": "STRING",
+        "description": "URI of the page browsed by the user"
+      },
+      {
+        "name": "cost",
+        "type": "FLOAT",
+        "description": "Cost of the product"
+      },
+      {
+        "name": "category",
+        "type": "STRING",
+        "description": "Product category"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "description": "Product name"
+      },
+      {
+        "name": "brand",
+        "type": "STRING",
+        "description": "Product brand"
+      },
+      {
+        "name": "department",
+        "type": "STRING",
+        "description": "Product department"
+      }
+    ],
+    "mode": "REPEATED",
+    "name": "session",
+    "type": "RECORD",
+    "description": "ARRAY<RECORD>: List of all events in the session."
+  }
+]

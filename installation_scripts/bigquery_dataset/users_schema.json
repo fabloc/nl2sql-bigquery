@@ -1,0 +1,74 @@
+[
+    {
+       "mode": "NULLABLE",
+       "name": "id",
+       "type": "STRING",
+       "description": "The unique identifier for the user"
+    },
+    {
+       "mode": "NULLABLE",
+       "name": "first_name",
+       "type": "STRING",
+       "description": "The user's first name"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "last_name",
+        "type": "STRING",
+        "description": "The user's last name"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "gender",
+        "type": "STRING",
+        "description": "The user's gender"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "age",
+        "type": "INT64",
+        "description": "The user's age"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "state",
+        "type": "STRING",
+        "description": "The user's state"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "street_address",
+        "type": "STRING",
+        "description": "The user's street address"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "postal_code",
+        "type": "STRING",
+        "description": "The user's postal code"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "city",
+        "type": "STRING",
+        "description": "The user's city"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "country",
+        "type": "STRING",
+        "description": "The user's country"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "email",
+        "type": "STRING",
+        "description": "The user's email address"
+    },
+    {
+        "mode": "NULLABLE",
+        "name": "created_at",
+        "type": "DATETIME",
+        "description": "The date and time the user was created"
+    }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "id",
+    "type": "INTEGER",
+    "description": "The unique identifier for the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "cost",
+    "type": "FLOAT",
+    "description": "The cost of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "category",
+    "type": "STRING",
+    "description": "The category of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "name",
+    "type": "STRING",
+    "description": "The name of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "brand",
+    "type": "STRING",
+    "description": "The brand of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "retail_price",
+    "type": "FLOAT",
+    "description": "The retail price of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "department",
+    "type": "STRING",
+    "description": "The department of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "sku",
+    "type": "STRING",
+    "description": "The SKU of the product"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "distribution_center_id",
+    "type": "INTEGER",
+    "description": "The ID of the distribution center where the product is stored"
+  }
+]

@@ -178,8 +178,11 @@ source .venv/bin/activate   # activate Virtualenv
 # installing required python packages
 pip install -r requirements.txt
 
-echo "***** Initializing PgVector Database with tables definitions and samples *****"
+# echo "***** Initializing Bigquery with new Dataset and all required Tables *****"
 cd ..
+python3 installation_scripts/bigquery_dataset/init_bigquery.py
+
+echo "***** Initializing PgVector Database with tables definitions and samples *****"
 sed -i "s|sql_ip_type = PRIVATE|sql_ip_type = PUBLIC|" config/config.ini
 python3 app/init_pgvector.py
 
