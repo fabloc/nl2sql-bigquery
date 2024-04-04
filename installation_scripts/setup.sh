@@ -6,7 +6,7 @@
 
 # Global variables
 #################################
-PROJECT_ID="nl2sql-demo-project"                      # ID of the project where you want to deploy
+PROJECT_ID="FILL_YOUR_PROJECT_ID"                      # ID of the project where you want to deploy
 REGION="europe-west1"                                 # Name of the region
 AUTH_USER="nl2sql_user"                               # User that will run the application
 ARTIFACT_REGISTRY_REPO="nl2sql-repo"                  # Name of the Artifact Registry Repository
@@ -14,7 +14,7 @@ SERVICE_NAME="nl2sql-service"                         # Name of the Cloud Run Se
 DATABASE_NAME="nl2sql-rag-db"
 DATABASE_USER="nl2sql-admin"
 DATABASE_PASSWORD=">rJFj8HbN<:ObiEm"
-BIGQUERY_DATASET="cdp_demo"
+BIGQUERY_DATASET="genai_nl2sql"
 # BIGQUERY_TABLES="products_table, users_table"   # Optional parameter listing the tables to use inside the Bigquery dataset, in the form "table1, table2, etc."
 #################################
 

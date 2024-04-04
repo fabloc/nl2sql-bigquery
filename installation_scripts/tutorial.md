@@ -22,6 +22,10 @@ Before start please make sure you have the following prerequisites:
   - Cloud Run Admin
   - Compute Engine Admin
 
+Additionally, the following organization policy must not be enforced:
+- constraints/sql.restrictAuthorizedNetworks (disable or add the IP address of the computer running the initialization in the authorized networks) - This organization policy can be re-enforced after the setup is complete
+
+
 You can assign missing roles or view your current permissions [here](https://console.cloud.google.com/iam-admin/iam)
 
 (Optional) If you are not executing this using cloud shell you will need to install the following:
