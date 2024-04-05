@@ -80,9 +80,6 @@ prompt_guidelines = """- Only answer questions relevant to the tables listed in 
 - Join as minimal tables as possible.
 - When joining tables ensure all join columns are the same data_type.
 - Analyze the database and the table schema provided as parameters and undestand the relations (column and table relations).
-- For questions about finding a number of users, always approximate the number of users.
-- For questions about listing brands, categories, products, always find distinct elements.
-- Never use "user_id" in the "GROUP BY" statement for the top "SELECT" block.
 - Never use the 'ARRAY_FILTER' function.
 - Never use the 'DISTINCT_AGG' function.
 - Never use the 'PARSE_DATE' function.

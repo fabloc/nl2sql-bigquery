@@ -117,49 +117,18 @@ def sql_explain(question, generated_sql, table_schema, similar_questions):
   logger.info("Starting SQL explanation...")
 
   response_json = {
-    "filters": [{
-        "name": "List all [Filters]",
-        "classification": "classification of the filter",
-        "columns": [{
-          "name": "Name of every column from [SQL Query] implementing the filter, from [Table Schema]",
-          "scope": "Scope of the column. It can have the values 'global', 'time-dependent' or 'both'",
-          "is_relevant": "True if the column is correctly implementing the filter, False otherwise"
-        }]
-    }],
-    "reversed_question": "Write in natural language the question that the [SQL Query] is responding to"
-  }
-
-  schema = {
-    "$schema": "https://json-schema.org/draft/2019-09/schema",
-    "type": "object",
-    "properties": {
-      "filters": {
-        "type": "array",
-        "items": {
-          "name": {"type": "string"},
-          "classification": {"type": "string"},
-          "columns": {
-            "type": "array",
-            "items": {
-              "name": {"type": "string"},
-              "scope": {"type": "string"},
-              "is_relevant": {"type": "boolean"},
-            }
-          },
-          "required": ["name", "classification", "columns"]
-        }
-      },
-      "reversed_question": {"type": "string"}
-    },
-    "required": ["filters", "reversed_question"]
+    "question": "Write the question generated at step 2",
+    "is_matching": "Return 'True' if the question generated at step 2 matches the [Question], 'False' otherwise",
+    "mismatch_details": "Synthetic indications on how the SQL Query should be modified to answer the [Question]"
   }
 
   sql_explanation = {
+    "reversed_question": "",
     "is_matching": True,
-    "mismatch_details": ''
+    "mismatch_details": ""
   }
 
-  context_prompt = f"""You are an AI for SQL Analysis. Your mission is to analyse a SQL [SQL Query] and identify how its different parts answer a [Question].
+  context_prompt = f"""You are an AI for SQL Analysis. Your mission is to analyse a SQL [SQL Query] and identify which question it answers to. Then you'll compare this question to the reference [Question].
 You will reply only with a json object as described in the [Analysis Steps].
 
 [Table Schema]:
@@ -168,13 +137,11 @@ You will reply only with a json object as described in the [Analysis Steps].
 {question_to_query_examples(similar_questions)}[Analysis Steps]:
 Let's work this out step by step to make sure we have the right answer:
 1. Analyze the tables in [Table Schema], and understand the relations (column and table relations).
-2. For each column in each table of [Table Schema], find its scope in its description (format: 'Scope: (time-dependent|global)').
-3. Analyze the [Question] and break it down into a list of [Filters]. Make sure to associate the correct time constraints to each filter. For example the question "Give me 5 brands at random from the top 100 selling brands" has [Filters] = ["random selection of 5 brands", "top 100 selling brands"] - the question "Number of users with age under 35, who have already bought 'Decathlon' brand products, but not after '2023-08-01'" has the [Filters] = ["age under 35", "purchased at least 1 'Decathlon' brand product", "has not purchased a 'Decathlon' brand product after '2023-08-01'"] - question "Number of users with age under 35, located in France, and who have already bought 'Decathlon' brand products, before August 2023" has [Filters] = ["age under 35", "located in France", "has purchased 'Decathlon' brand product before August 2023"].
-4. Classify each filter in [Filters]: 'time-dependent' or 'global'. For example: the filter 'purchased for more than $55 in total' has classification 'global' - the filter 'purchased at least 1 Decathlon product in the last 3 months' has classification 'time-dependent'.
-5. For each filter in [Filters], trace back all the matching columns present in [SQL Query] and also part of [Table Schema]. Make sure to prefix the column with the appropriate structure if needed. For example, the column 'purchased_items' can belong to the structure 'total_products_purchased_by_brands' which has a 'global' scope and should be noted 'total_products_purchased_by_brands.purchased_items', or belong to the structure 'daily_products_purchased_by_brands' which has 'time-dependent' scope and should be noted 'daily_products_purchased_by_brands.purchased_items'.
-6. Answer using only the following json format: {json.dumps(response_json)}
-7. Always use double quotes "" for json property names and values in the returned json object.
-8. Remove ```json prefix and ``` suffix from the outputs. Don't add any comment around the returned json.
+2. Analyze the [SQL Query] and find the question it answers. Ground the question generation with the [Table Schema] data only and make sure not to be influenced by the [Question].
+3. Compare the question generated at step 2 to the [Question] and identify any semantic differences between the 2.
+4. Answer using only the following json format: {json.dumps(response_json)}
+5. Always use double quotes "" for json property names and values in the returned json object.
+6. Remove ```json prefix and ``` suffix from the outputs. Don't add any comment around the returned json.
 
 Remember that before you answer a question, you must check to see if it complies with your mission above.
 
@@ -195,20 +162,11 @@ Remember that before you answer a question, you must check to see if it complies
     logger.info("Validation completed with status: \n" + raw_json)
     validation_json = json.loads(raw_json, strict=False)
 
-    # Validate JSON against JSON schema
-    jsonschema.validate(validation_json, schema = schema)
-
     # Analyze results for possible mismatch in SQL Query implementation
-    for filter in validation_json['filters']:
-      for column in filter['columns']:
-        if column['scope'] != 'both' and column['scope'] != filter['classification']:
-          sql_explanation['is_matching'] = 'False'
-          sql_explanation['mismatch_details'] += "- \"" + filter['name'] + "\" is implemented using column '" + column['name'] + "' with scope '" + column['scope'] + "'. Use a column with scope '" + ('time-dependent' if column['scope'] == 'global' else 'global') + "' instead.\n"
-        if column['is_relevant'] == False:
-          sql_explanation['is_matching'] = 'False'
-          sql_explanation["mismatch_details"] += "- The column '" + column['name'] + "' is either not relevant or not used correctly to implement the filter '" + filter['name'] + "'.\n"
+    sql_explanation['is_matching'] = True if validation_json['is_matching'] == 'True' else False
+    sql_explanation["mismatch_details"] = validation_json['mismatch_details'] if ('mismatch_details' in validation_json) else ''
 
-    sql_explanation["reversed_question"] = validation_json['reversed_question']
+    sql_explanation["reversed_question"] = validation_json['question']
 
   except JSONDecodeError as e:
     logger.error("Error while deconding JSON response: " + str(e))
@@ -265,7 +223,7 @@ Errors:
 
   def get_corrected_sql(self, sql: str, bq_error_msg: str, validation_error_msg: str) -> str:
     logger.info("Sending prompt...")
-    error_msg = ('- Syntax error returned from BigQuery: ' + bq_error_msg if bq_error_msg != None else '') + ('\n  ' + validation_error_msg if validation_error_msg != None else '')
+    error_msg = ('- Syntax error returned from BigQuery: ' + bq_error_msg + '\n  ' if bq_error_msg != None else '') + ('- Semantics errors returned from SQL Validator: ' + validation_error_msg + '\n  ' if validation_error_msg != None else '')
     self.add_iteration(sql, error_msg)
 
     context_prompt = f"""You are a BigQuery SQL guru. This session is trying to troubleshoot a Google BigQuery SQL Query.
@@ -282,8 +240,8 @@ It is important that the query still answers the original question and follows t
 [Correction Steps]:
 Let's work this out step by step to make sure we have the right corrected SQL Query:
 1. Analyze the tables in [Table Schema], and understand the relations (column and table relations).
-2. Analyze the SQL Query in [Last Generated SQL Queries with Errors] and understand why it has errors.
-3. Propose a SQL Query that corrects the [Last Generated SQL Queries with Errors] while matching the [Question].
+2. Analyze the SQL Query in [Last Generated SQL Queries with Errors] and understand the associated syntax and semantic errors.
+3. Propose a SQL Query that corrects the errors while answering the [Question].
 4. The [New Generated SQL Query] must not be present in [Forbidden SQL Queries] 
 5. Always use double quotes "" for json property names and values in the returned json object.
 6. Remove ```json prefix and ``` suffix from the outputs. Don't add any comment around the returned json.
@@ -317,10 +275,10 @@ def clean(str):
   return clean_json(clean_sql(str))
 
 def clean_sql(result):
-  result = result.replace("sql", "").replace("```", "")
+  result = result.replace("```", "").replace("```sql", "").removeprefix("sql")
   return result
 
 
 def clean_json(result):
-  result = result.replace("json", "").replace("```", "")
+  result = result.replace("```", "").replace("```json", "").removeprefix("json")
   return result

@@ -130,7 +130,7 @@ sed -i "s|region =|region = ${REGION}|" ../config/config.ini
 sed -i "s|auth_user =|auth_user = ${AUTH_USER}|" ../config/config.ini
 sed -i "s|project_id_data =|project_id_data = ${PROJECT_ID}|" ../config/config.ini
 sed -i "s|dataset_id =|dataset_id = ${BIGQUERY_DATASET}|" ../config/config.ini
-sed -i "s|tables = []|tables = [${BIGQUERY_TABLES}]|" ../config/config.ini
+sed -i "s|tables = \[\]|tables = \[${BIGQUERY_TABLES}\]|" ../config/config.ini
 sed -i "s|database_name =|database_name = ${DATABASE_NAME}|" ../config/config.ini
 sed -i "s|database_user =|database_user = ${DATABASE_USER}|" ../config/config.ini
 sed -i "s|database_password =|database_password = ${DATABASE_PASSWORD}|" ../config/config.ini

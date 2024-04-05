@@ -85,6 +85,6 @@
     "mode": "REPEATED",
     "name": "session",
     "type": "RECORD",
-    "description": "ARRAY<RECORD>: List of all events in the session."
+    "description": "List of all events in the session."
   }
 ]
